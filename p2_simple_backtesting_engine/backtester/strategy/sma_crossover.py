@@ -16,11 +16,14 @@ class SMACrossover(Strategy):
         #   in this case, we should sell
 
         # We definitely want to cache this
-        prev_sma_50 = data['close'].shift(1).rolling(window=50).mean()
+        prev_sma_50 = data['SMA_50'].shift(1)
+        prev_sma_200 = data['SMA_200'].shift(1)
+
 
         data['signal'] = 0
-        data['signal'][prev_sma_50 <= data['SMA_200']] = 1  # Buy
-        data['signal'][prev_sma_50 > data['SMA_200']] = -1  # Sell
+        data.loc[[(prev_sma_50 <= prev_sma_200) & (data['SMA_50'] > data['SMA_200'])], 'signal'] = 1  # Buy
+        data.loc[[(prev_sma_50 > prev_sma_200) & (data['SMA_50'] < data['SMA_200'])], 'signal'] = -1  # Sell
+
         return data
 
 
