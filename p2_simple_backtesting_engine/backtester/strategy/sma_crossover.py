@@ -1,6 +1,7 @@
 from datetime import datetime
 from backtester.strategy.strategy import Strategy
-from backtester.strategy.signal import Signal, Side, StrategyType
+from backtester.strategy.signal import Signal, Side
+from backtester.strategy.strategy_type import StrategyType
 import pandas as pd
 
 # This is a super basic SMA crossover implementation
@@ -28,24 +29,27 @@ class SMACrossover(Strategy):
         #   in this case, we should sell
 
         # We definitely want to cache this
-        prev_sma_50 = data['SMA_50'].shift(1)
-        prev_sma_200 = data['SMA_200'].shift(1)
+        prev_sma_50 = data['SMA_50'].shift(1).fillna(0)
+        prev_sma_200 = data['SMA_200'].shift(1).fillna(0)
 
         # bitmask it and iterate to append signals
         cross_up = (prev_sma_50 <= prev_sma_200) & (data['SMA_50'] > data['SMA_200'])
         cross_down = (prev_sma_50 > prev_sma_200) & (data['SMA_50'] < data['SMA_200'])
 
+        print(data[['SMA_50', 'SMA_200']].head(52))
+        print("cross_down", cross_down)
+
+
         # we only want to generate 1 signal per crossover event though, let's make it easy on us
         cross_up_event = cross_up & (~cross_up.shift(1).fillna(False))
         cross_down_event = cross_down & (~cross_down.shift(1).fillna(False))
 
-        print(data[['SMA_50', 'SMA_200']].tail(10))
 
         for idx in data.index[cross_up_event]:
             # Buy
             signals.append(Signal(
                 instrument_id=self.instrument_id, 
-                direction=Side.BUY, 
+                side=Side.BUY, 
                 signal_type=StrategyType.SMA_CROSSOVER, 
                 timestamp=datetime.now()
             ))
@@ -53,7 +57,7 @@ class SMACrossover(Strategy):
             # Sell
             signals.append(Signal(
                 instrument_id=self.instrument_id, 
-                direction=Side.SELL, 
+                side=Side.SELL, 
                 signal_type=StrategyType.SMA_CROSSOVER, 
                 timestamp=datetime.now()
             ))

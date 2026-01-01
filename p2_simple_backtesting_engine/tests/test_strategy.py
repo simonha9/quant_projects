@@ -1,7 +1,9 @@
 import pandas as pd
 from datetime import datetime
 from backtester.strategy.sma_crossover import SMACrossover
-from backtester.strategy.signal import Side, StrategyType
+from backtester.strategy.signal import Side
+from backtester.strategy.strategy_type import StrategyType
+
 
 def test_sma_crossover_buy_signal():
     # Make sure the SMA windows are satisfied
@@ -14,7 +16,7 @@ def test_sma_crossover_buy_signal():
 
     assert len(signals) == 1
     signal = signals[0]
-    assert signal.direction == Side.BUY
+    assert signal.side == Side.BUY
     assert signal.signal_type == StrategyType.SMA_CROSSOVER
     assert signal.instrument_id == "TEST"
     assert isinstance(signal.timestamp, datetime)
@@ -30,7 +32,7 @@ def test_sma_crossover_sell_signal():
 
     assert len(signals) == 1
     signal = signals[0]
-    assert signal.direction == Side.SELL
+    assert signal.side == Side.SELL
     assert signal.signal_type == StrategyType.SMA_CROSSOVER
     assert signal.instrument_id == "TEST"
     assert isinstance(signal.timestamp, datetime)
