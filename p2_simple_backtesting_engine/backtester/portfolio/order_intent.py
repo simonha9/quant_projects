@@ -46,7 +46,7 @@ class OrderIntent:
         self.qty = qty
         self.price = price
         self.intent_type = intent_type
-        self.timestamp = timestamp or datetime.now()
+        self.timestamp = datetime.now()
 
     def is_buy_order(self) -> bool:
         return self.side == Side.BUY
@@ -65,6 +65,12 @@ class OrderIntent:
     
     def get_qty(self) -> int:
         return self.qty
+    
+    def get_side(self) -> Side:
+        return self.side
+    
+    def get_timestamp(self) -> datetime:
+        return self.timestamp
 
 
     
