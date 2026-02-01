@@ -46,3 +46,6 @@ class Ledger:
     def process_filled_orders(self, filled_orders: list[FilledTrade]) -> None:
         for filled_order in filled_orders:
             self.add_record(filled_order)
+
+    def rows(self):
+        return self.records

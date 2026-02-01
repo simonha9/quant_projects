@@ -21,9 +21,6 @@ class Position:
     def get_avg_entry_price(self) -> float:
         return self.avg_entry_price
     
-    def get_value(self) -> float:
-        return self.qty 
-    
     def recalculate_avg_entry_price(self, qty_delta: int, price: float) -> float:
         # get total value + price*qty_delta / total qty + qty_delta
 
